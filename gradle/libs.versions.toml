@@ -1,0 +1,44 @@
+[versions]
+androidx-lifecycle = "2.9.0"
+composeHotReload = "1.0.0-alpha10"
+composeMultiplatform = "1.8.1"
+junit = "4.13.2"
+kotlin = "2.1.21"
+kotlinx-coroutines = "1.10.2"
+jetbrainsKotlinJvm = "2.1.21"
+agp = "8.10.1"
+kotlinStdlib = "2.1.21"
+koin = "4.1.0"
+ksp = "2.1.21-2.0.2"
+compose-nav="2.9.0-beta03"
+firebase-kt="2.1.0"
+credence = "1.0.0-dev02"
+build-config = "5.6.7"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+compose-nav = { group = "org.jetbrains.androidx.navigation", name="navigation-compose", version.ref="compose-nav"}
+koin-compose = { group = "io.insert-koin", name="koin-compose", version.ref="koin"}
+koin-compose-viewmodel = { group = "io.insert-koin", name="koin-compose-viewmodel", version.ref="koin"}
+koin-compose-nav = { group = "io.insert-koin", name="koin-compose-viewmodel-navigation", version.ref="koin"}
+koin-core = { group = "io.insert-koin", name="koin-core", version.ref="koin"}
+firebase-auth = { group = "dev.gitlive", name="firebase-auth", version.ref="firebase-kt"}
+credence-oauth-github = { group = "dev.justincodinguk.credence", name="oauth-github", version.ref="credence"}
+credence-core = {group="dev.justincodinguk.credence", name="foundation", version.ref="credence"}
+
+[plugins]
+composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlinx-serialization = { id="org.jetbrains.kotlin.plugin.serialization", version.ref="kotlin"}
+ksp = { id="com.google.devtools.ksp", version.ref="ksp"}
+buildconfig = {id="com.github.gmazzo.buildconfig", version.ref="build-config"}
