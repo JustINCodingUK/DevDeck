@@ -1,42 +1,52 @@
 package dev.justincodinguk.devdeck.features.auth
 
-import DevDeck.features.auth.BuildConfig
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.justincodinguk.credence.oauth_github.GithubOAuthService
+import dev.justincodinguk.devdeck.core.data.auth.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
-    private val _emailText = MutableStateFlow("")
-    val emailText = _emailText.asStateFlow()
-
-    private val _passwordText = MutableStateFlow("")
-    val passwordText = _passwordText.asStateFlow()
-
-    private val githubOAuthService = GithubOAuthService(
-        clientId = BuildConfig.GITHUB_OAUTH_CLIENTID,
-        clientSecret = BuildConfig.GITHUB_OAUTH_CLIENT_SECRET,
-        redirectUri = BuildConfig.GITHUB_OAUTH_REDIRECT_URI
-    )
+    private val _authState = MutableStateFlow(AuthState())
+    val authState = _authState.asStateFlow()
 
     fun loginWithGithub() {
         viewModelScope.launch {
-            githubOAuthService.authenticate()
+            _authState.emit(
+                authState.value.copy(authStatus=AuthStatus.WAITING)
+            )
+            authRepository.signInWithGithub().collect {
+                _authState.emit(
+                    authState.value.copy(
+                        authStatus = AuthStatus.LOGGED_IN,
+                        user = it
+                    )
+                )
+            }
         }
     }
 
     fun updateEmailText(newText: String) {
         viewModelScope.launch {
-            _emailText.emit(newText)
+            _authState.emit(
+                authState.value.copy(
+                    emailText = newText
+                )
+            )
         }
     }
 
     fun updatePasswordText(newText: String) {
         viewModelScope.launch {
-            _passwordText.emit(newText)
+            _authState.emit(
+                authState.value.copy(
+                    passwordText = newText
+                )
+            )
         }
     }
 }
