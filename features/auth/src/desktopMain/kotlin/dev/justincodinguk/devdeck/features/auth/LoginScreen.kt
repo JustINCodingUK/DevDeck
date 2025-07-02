@@ -36,9 +36,7 @@ fun LoginScreen(
     viewModel: AuthViewModel,
     darkTheme: Boolean
 ) {
-
-    val emailText by viewModel.emailText.collectAsState()
-    val passwordText by viewModel.passwordText.collectAsState()
+    val state by viewModel.authState.collectAsState()
 
     Box(Modifier.fillMaxSize()) {
         Image(
@@ -64,8 +62,8 @@ fun LoginScreen(
                     .size(768.dp)
             ) {
                 LoginUI(
-                    emailText = emailText,
-                    passwordText = passwordText,
+                    emailText = state.emailText,
+                    passwordText = state.passwordText,
                     onEmailTextChange = viewModel::updateEmailText,
                     onPasswordTextChange = viewModel::updatePasswordText,
                     onSubmit = {},

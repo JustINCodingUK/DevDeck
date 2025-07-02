@@ -1,13 +1,40 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.buildconfig)
 }
 
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if(file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
 
+val encryptionKey = localProperties.getProperty("db.encryption.key") as String
+
+val firebaseProperties = Properties().apply {
+    val file = rootProject.file("firebase.properties")
+    if(file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
+val firebaseProjectId = firebaseProperties.getProperty("project.id") as String
+val firebaseAppId = firebaseProperties.getProperty("app.id") as String
+val firebaseApiKey = firebaseProperties.getProperty("api.key") as String
+
+buildConfig {
+    buildConfigField("String", "DB_ENCRYPTION_KEY", encryptionKey)
+    buildConfigField("String", "FIREBASE_PROJECT_ID", firebaseProjectId)
+    buildConfigField("String", "FIREBASE_APP_ID", firebaseAppId)
+    buildConfigField("String", "FIREBASE_API_KEY", firebaseApiKey)
+}
 
 kotlin {
     jvm("desktop")
@@ -16,7 +43,11 @@ kotlin {
         val desktopMain by getting
         commonMain.dependencies {
             implementation(project(":core:ui"))
-          implementation(project(":features:auth"))
+            implementation(project(":features:auth"))
+            implementation(project(":core:logging"))
+            implementation(project(":core:di"))
+            implementation(project(":core:datastore"))
+            implementation(libs.firebase.common)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.nav)
