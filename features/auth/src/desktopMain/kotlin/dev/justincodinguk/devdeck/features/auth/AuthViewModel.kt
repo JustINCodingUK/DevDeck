@@ -14,11 +14,27 @@ class AuthViewModel(
     private val _authState = MutableStateFlow(AuthState())
     val authState = _authState.asStateFlow()
 
+    fun loginWithEmail() {
+        viewModelScope.launch {
+            val email = authState.value.emailText
+            val password = authState.value.passwordText
+
+            _authState.emit(authState.value.copy(authStatus=AuthStatus.WAITING))
+
+            authRepository.signIn(email, password).collect {
+                _authState.emit(
+                    authState.value.copy(
+                        authStatus = AuthStatus.LOGGED_IN,
+                        user = it
+                    )
+                )
+            }
+        }
+    }
+
     fun loginWithGithub() {
         viewModelScope.launch {
-            _authState.emit(
-                authState.value.copy(authStatus=AuthStatus.WAITING)
-            )
+            _authState.emit(authState.value.copy(authStatus=AuthStatus.WAITING))
             authRepository.signInWithGithub().collect {
                 _authState.emit(
                     authState.value.copy(
@@ -32,21 +48,13 @@ class AuthViewModel(
 
     fun updateEmailText(newText: String) {
         viewModelScope.launch {
-            _authState.emit(
-                authState.value.copy(
-                    emailText = newText
-                )
-            )
+            _authState.emit(authState.value.copy(emailText = newText))
         }
     }
 
     fun updatePasswordText(newText: String) {
         viewModelScope.launch {
-            _authState.emit(
-                authState.value.copy(
-                    passwordText = newText
-                )
-            )
+            _authState.emit(authState.value.copy(passwordText = newText))
         }
     }
 }
