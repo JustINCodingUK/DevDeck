@@ -4,6 +4,7 @@
 # 🚀 DevDeck
 
 **Build. Organize. Manage.. but faster**
+
 A blazing-fast cross-platform developer setup manager and CLI tool, powered by Kotlin Multiplatform + Compose Desktop.
 
 DevDeck simplifies managing developer environments across Linux, macOS, and Windows using smart, declarative deck files. Whether you're spinning up projects, syncing tools, or exploring new tech, DevDeck has your back—with features like curated news, one-click project control, quick environment setup, ready-made templates, public deckfile downloads, and even an disposable code runner.
@@ -35,18 +36,18 @@ DevDeck simplifies managing developer environments across Linux, macOS, and Wind
 
 ## 🧠 Project Structure
 
-:composeApp → Main Compose UI Application (window, Firebase setup)
+* :composeApp → Main Compose UI Application (window, Firebase setup)
 
-core:data → Repository layer (data sources, interactors)
-core:datastore → Encrypted MapDB wrapper for secure persistent storage
-core:deck-api → CLI core: task DSL, compiler, runners, refs
-core:di → Koin module loading interface using Java SPI
-core:logging → Logging utilities
-core:model → Common model/data classes
-core:network → Network layer (e.g., AccountManager)
-core:ui → Shared Compose UI components
+* core:data → Repository layer (data sources, interactors)
+* core:datastore → Encrypted MapDB wrapper for secure persistent storage
+* core:deck-api → CLI core: task DSL, compiler, runners, refs
+* core:di → Koin module loading interface using Java SPI
+* core:logging → Logging utilities
+* core:model → Common model/data classes
+* core:network → Network layer (e.g., AccountManager)
+* core:ui → Shared Compose UI components
 
-features:auth → Authentication UI (email login, GitHub OAuth)
+* features:auth → Authentication UI (email login, GitHub OAuth)
 
 ---
 
@@ -79,17 +80,10 @@ STEP END
 * Kotlin Multiplatform (JVM)
 * Compose Multiplatform Desktop
 * Firebase (Authentication)
-* Credence (OAuth Helper Library)
+* [Credence](https://github.com/JustINCodingUK/Credence) (OAuth Helper Library)
 * Ktor (Networking)
 * Koin (Dependency Injection)
 * MapDB (Encrypted key-value storage)
-
----
-
-## 🔐 Authentication
-
-* Email/Password via Firebase Auth
-* GitHub OAuth with internal redirect URI handling
 
 ---
 
@@ -97,7 +91,6 @@ STEP END
 ## 📝 License
 
 MIT License
-Because open source should be as free as the dopamine hit from a green GitHub commit square 💚
 
 ---
 
