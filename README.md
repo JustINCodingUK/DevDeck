@@ -12,12 +12,12 @@ DevDeck simplifies managing developer environments across Linux, macOS, and Wind
 ---
 
 ## 📃 Planned Application Features
-* Feed – Curated tech news and dev content at a glance.
-* My Deck – View and manage your current environment setup.
-* New Project – Create new apps using ready-to-go templates.
-* MyProjects – Open, build, and run all your dev projects in one place.
-* Downloads – Discover and import public deckfiles and tools.
-* QuickCode – Instantly run small scripts for quick testing.
+* Feed: Curated tech news and dev content at a glance.
+* My Deck: View and manage your current environment setup.
+* New Project: Create new apps using ready-to-go templates.
+* MyProjects: Open, build, and run all your dev projects in one place.
+* Downloads: Discover and import public deckfiles and tools.
+* QuickCode: Instantly run small scripts for quick testing.
 
 ---
 
