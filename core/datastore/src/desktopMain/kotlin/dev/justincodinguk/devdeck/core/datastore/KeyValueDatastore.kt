@@ -20,24 +20,25 @@ class KeyValueDatastore(
         .closeOnJvmShutdown()
         .make()
 
-    fun put(key: String, value: String) {
+    fun put(hashMapKey: String, key: String, value: String) {
         encryptor?.decrypt()
-        db.hashMap(key, Serializer.STRING, Serializer.STRING)
+        db.hashMap(hashMapKey, Serializer.STRING, Serializer.STRING)
             .createOrOpen()[key] = value
         encryptor?.encrypt()
     }
 
-    fun retrieve(key: String): String? {
+    fun retrieve(hashMapKey: String, key: String): String? {
+        encryptor?.encrypt()
         encryptor?.decrypt()
-        val value = db.hashMap(key, Serializer.STRING, Serializer.STRING)
+        val value = db.hashMap(hashMapKey, Serializer.STRING, Serializer.STRING)
             .createOrOpen()[key]
         encryptor?.encrypt()
         return value
     }
 
-    fun clear(key: String) {
+    fun clear(hashMapKey: String, key: String) {
         encryptor?.decrypt()
-        db.hashMap(key, Serializer.STRING, Serializer.STRING)
+        db.hashMap(hashMapKey, Serializer.STRING, Serializer.STRING)
             .createOrOpen().remove(key)
         encryptor?.encrypt()
     }

@@ -26,13 +26,13 @@ object Firebase {
 
     fun init() {
         FirebasePlatform.initializeFirebasePlatform(object : FirebasePlatform() {
-            override fun clear(key: String) = datastore.clear(key)
+            override fun clear(key: String) = datastore.clear("firebase", key)
 
             override fun log(msg: String) = logger.info(msg)
 
-            override fun retrieve(key: String) = datastore.retrieve(key)
+            override fun retrieve(key: String) = datastore.retrieve("firebase", key)
 
-            override fun store(key: String, value: String) = datastore.put(key, value)
+            override fun store(key: String, value: String) = datastore.put("firebase", key, value)
         })
 
         val firebaseOptions = FirebaseOptions.Builder()

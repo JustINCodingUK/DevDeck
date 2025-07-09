@@ -11,7 +11,7 @@ class Encryptor(
     encryptionKey: String
 ) {
 
-    private val keySpec = SecretKeySpec(encryptionKey.toByteArray(), "AES")
+    private val keySpec = SecretKeySpec(java.util.HexFormat.of().parseHex(encryptionKey), "AES")
     private val cipher = Cipher.getInstance("AES")
 
     fun encrypt() {
