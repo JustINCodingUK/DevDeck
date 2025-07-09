@@ -47,6 +47,7 @@ kotlin {
             implementation(project(":core:logging"))
             implementation(project(":core:di"))
             implementation(project(":core:datastore"))
+            implementation(compose.materialIconsExtended)
             implementation(libs.firebase.common)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)

@@ -17,6 +17,10 @@ build-config = "5.6.7"
 mapdb="3.1.0"
 logback="1.4.14"
 slf4j="2.0.9"
+kotlinx-serialization="1.9.0"
+ktor="3.2.0"
+commons="1.10.0"
+mvn-publish="0.30.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -37,8 +41,14 @@ firebase-common = { group = "dev.gitlive", name="firebase-common", version.ref="
 mapdb = {group="org.mapdb", name="mapdb", version.ref="mapdb"}
 logback-classic = { group = "ch.qos.logback", name="logback-classic", version.ref="logback"}
 slf4j-api = { group = "org.slf4j", name="slf4j-api", version.ref="slf4j"}
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name="kotlinx-serialization-json", version.ref="kotlinx-serialization"}
+ktor-client-cio = { group = "io.ktor", name="ktor-client-cio", version.ref="ktor"}
+ktor-client-content-negotiation = { group = "io.ktor", name="ktor-client-content-negotiation", version.ref="ktor"}
+ktor-client-json = { group = "io.ktor", name="ktor-serialization-kotlinx-json", version.ref="ktor"}
 credence-oauth-github = { group = "dev.justincodinguk.credence", name="oauth-github", version.ref="credence"}
 credence-core = {group="dev.justincodinguk.credence", name="foundation", version.ref="credence"}
+commons-text = {group="org.apache.commons", name="commons-text", version.ref="commons"}
+
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
@@ -50,3 +60,4 @@ androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.lib
 kotlinx-serialization = { id="org.jetbrains.kotlin.plugin.serialization", version.ref="kotlin"}
 ksp = { id="com.google.devtools.ksp", version.ref="ksp"}
 buildconfig = {id="com.github.gmazzo.buildconfig", version.ref="build-config"}
+maven-publish = {id="com.vanniktech.maven.publish", version.ref="mvn-publish"}
