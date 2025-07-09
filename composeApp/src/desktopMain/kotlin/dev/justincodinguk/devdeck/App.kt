@@ -13,25 +13,28 @@ import dev.justincodinguk.devdeck.core.ui.theme.DevDeckTheme
 import dev.justincodinguk.devdeck.features.auth.AuthViewModel
 import dev.justincodinguk.devdeck.nav.Routes
 import dev.justincodinguk.devdeck.features.auth.LoginScreen
+import dev.justincodinguk.devdeck.nav.Dashboard
 import org.koin.compose.viewmodel.koinViewModel
-
 
 @Composable
 @Preview
 fun App() {
-
     val isDarkTheme by mutableStateOf(isSystemInDarkTheme())
 
     DevDeckTheme {
         Scaffold {
+            val navController = rememberNavController()
             NavHost(
-                navController = rememberNavController(),
-                startDestination = Routes.Login.name
+                navController = navController,
+                startDestination = Routes.Dashboard.name
             ) {
-                composable(Routes.Login.name) {
+                composable(Routes.Auth.name) {
                     val authViewModel = koinViewModel<AuthViewModel>()
+                    LoginScreen(authViewModel, isDarkTheme) { navController.navigate(Routes.Dashboard.name) }
+                }
 
-                    LoginScreen(authViewModel, isDarkTheme)
+                composable(Routes.Dashboard.name) {
+                    Dashboard()
                 }
             }
         }
