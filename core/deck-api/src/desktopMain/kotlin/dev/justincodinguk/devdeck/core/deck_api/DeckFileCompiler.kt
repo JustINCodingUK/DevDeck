@@ -18,15 +18,30 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.lang.Exception
 
+/**
+ * Compiles and parses a `.deckfile` file to produce a [DeckFile] object containing executable tasks.
+ *
+ * This class powers the DevDeck DSL system, enabling automated environment setup from a
+ * declarative script. It handles script parsing, task generation, and platform-specific
+ * resolution of install references.
+ *
+ * @param filePath Path to the `.deckfile` file containing the setup script.
+ * @param referencesDirectory Directory where installation references are stored or cached.
+ * @param taskBatchSize Number of tasks to run in parallel.
+ */
 class DeckFileCompiler(
     private val filePath: String,
     referencesDirectory: String,
     taskBatchSize: Int
 ) {
-
     private val deckFileRaw = File(filePath).readLines()
-    val taskHandler = TaskHandler(taskBatchSize)
+
+    /** [TaskHandler] object to manage running tasks */
+    private val taskHandler = TaskHandler(taskBatchSize)
+
     private val jsonSerializer = Json { ignoreUnknownKeys = true; prettyPrint = true }
+
+    /** Ktor [HttpClient] to make get requests */
     private val httpClient = HttpClient(CIO) {
         engine {
             requestTimeout = 0
@@ -35,10 +50,21 @@ class DeckFileCompiler(
             json(jsonSerializer)
         }
     }
+
+    /** [InstallReferenceLoader] object to load local and online installation references */
     private val installReferenceLoader =
         InstallReferenceLoader(referencesDirectory, httpClient, jsonSerializer)
+
+    /** Current [Platform] with OS and architecture */
     private val platform = Platform.current()
 
+    /**
+     * Loads and compiles the deck file into a [DeckFile] object with executable tasks.
+     * `deck.name` and `deck.author` are optional.
+     *
+     * @return [DeckFile] object containing executable tasks.
+     * @throws DeckFileSyntaxException when the deckfile has invalid syntax.
+     */
     fun loadDeckFile(): DeckFile {
         var scriptStarted = false
         var deckName = "Unspecified"
@@ -86,20 +112,28 @@ class DeckFileCompiler(
         return DeckFile(deckName, deckAuthor, tasks, taskHandler)
     }
 
+    /**
+     * Parses [Task] objects present in a single line of the deckfile
+     *
+     * @param line A single line of the deckfile
+     * @return List of parsed [Task] objects
+     * @throws [DeckFileSyntaxException] when the line has invalid syntax
+     */
     private fun parseTasks(line: String): List<Task> {
         val splitLine = line.split(" ")
         val command = splitLine.first().lowercase()
         val args = splitLine.subList(1, splitLine.size)
 
         when (command) {
+            // Example syntax: INSTALL company.artifactId@version
             "install" -> {
                 val refsWithVersion = buildMap {
                     args.forEach {
-                        if("@" in it) {
+                        if ("@" in it) {
                             val (id, version) = it.split("@")
                             put(installReferenceLoader.getReference(id), version)
                         }
-                        if("@" !in it) {
+                        if ("@" !in it) {
                             put(installReferenceLoader.getReference(it), "")
                         }
                     }
@@ -124,16 +158,24 @@ class DeckFileCompiler(
                 return tasks
             }
 
+            // Example syntax: CLONE owner/repo_name IN /path/to/folder
             "clone" -> {
                 val url = args.first()
                 var dir = ""
                 if (args.size != 1) {
                     dir = args[2]
                 }
-                val cloneTask = CloneTask(url, dir, installReferenceLoader)
+                val gitInstallTask = InstallTask(
+                    platform,
+                    installReferenceLoader.getReference("git.git"),
+                    "",
+                    httpClient
+                )
+                val cloneTask = CloneTask(url, dir, gitInstallTask)
                 return listOf(cloneTask)
             }
 
+            // Example syntax: RUN "command --args" IN /path/to/folder
             "run" -> {
                 val runningCommand = line.split('"')[1]
                 var dir = ""
@@ -144,6 +186,7 @@ class DeckFileCompiler(
                 return listOf(runTask)
             }
 
+            // Example syntax: REFERENCE https://url.to/installrefs.json
             "reference" -> {
                 val url = args.first()
                 return listOf(ReferenceTask(url, installReferenceLoader))
@@ -155,10 +198,18 @@ class DeckFileCompiler(
         }
     }
 
+    /**
+     * Utility extension function to filter installations which would proceed via the system package manager
+     * @return List of [InstallReference] objects which would proceed via the system package manager
+     */
     private fun List<InstallReference>.packageManagerReferences() = filter {
         !(it.getReferenceResultForPlatform(platform).isUrl)
     }
 
+    /**
+     * Utility extension function to filter installations which would require manual installation and setting up of environment variables and menu entries
+     * @return List of [InstallReference] objects which would proceed manually
+     */
     private fun List<InstallReference>.urlReferences() = filter {
         (it.getReferenceResultForPlatform(platform).isUrl)
     }

@@ -14,6 +14,7 @@ kotlin {
     jvm("desktop")
     sourceSets.commonMain.dependencies {
         api(libs.kotlinx.coroutines.core)
+        implementation(project(":core:logging"))
         implementation(libs.ktor.client.cio)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.json)

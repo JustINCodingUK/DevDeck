@@ -8,6 +8,7 @@ import dev.justincodinguk.devdeck.core.deck_api.refs.OS
 import dev.justincodinguk.devdeck.core.deck_api.refs.PackageManagerHelper
 import dev.justincodinguk.devdeck.core.deck_api.refs.Platform
 import dev.justincodinguk.devdeck.core.deck_api.refs.TargetPlatform
+import dev.justincodinguk.devdeck.core.deck_api.refs.InstallReference.ReferenceResult
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeoutConfig
 import io.ktor.client.plugins.timeout
@@ -17,10 +18,19 @@ import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Files
 import java.util.zip.ZipFile
 
+/**
+ * Implementation of [Task] to install a binary from an installation reference, via the system package manager or manual installation.
+ *
+ * @param platform Current platform.
+ * @param installReference The reference of the binary to be installed.
+ * @param version The version of the binary to be installed, if not empty then would force a URL installation even if the binary can be resolved by the system package manager.
+ * @param httpClient The client to use for making GET requests
+ */
 class InstallTask(
     private val platform: Platform,
     private val installReference: InstallReference,
@@ -28,10 +38,22 @@ class InstallTask(
     private val httpClient: HttpClient,
 ) : Task {
 
+    /** The [ReferenceResult] object for the installation reference of the current platform */
     private val refResult = installReference.getReferenceResultForPlatform(platform)
+
+    /** The cache directory of DevDeck */
     private val directory = "${System.getProperty("user.home")}/.devdeck/"
 
     companion object {
+        /**
+         * Creates an [InstallTask] for multiple packages to be installed via the system package manager
+         *
+         * @param platform The current platform
+         * @param installReferences List of installation references to be acted upon
+         * @param httpClient The client to use for making GET requests
+         *
+         * @return An [InstallTask] to install multiple packages via a single command
+         */
         fun multiplePackages(
             platform: Platform,
             installReferences: List<InstallReference>,
@@ -80,16 +102,23 @@ class InstallTask(
 
     override val name = "Install ${installReference.name} in $directory"
 
+    private val logger = LoggerFactory.getLogger("InstallTask")
+    /**
+     * Executes the [InstallTask].
+     *
+     * First checks if the binary is to be installed via the package manager or not.
+     * If not, the binary is downloaded and installed manually.
+     */
     override suspend fun execute() {
-        println(name)
-        if (!refResult.isUrl) {
+        logger.info(name)
+        if (!refResult.isUrl && version.isEmpty()) {
             withContext(Dispatchers.IO) {
                 val command =
                     if (platform.os == OS.Linux) "pkexec ${refResult.result}" else refResult.result
                 ProcessBuilder(command.split(" ")).start()
             }
         } else {
-
+            val refResult = installReference.getReferenceResultForPlatform(platform, true)
             val url = refResult.result.replace("\${version}", version)
             File("$directory/bin/downloads").mkdirs()
             val fileName = url.split("/").last()
@@ -122,6 +151,11 @@ class InstallTask(
         }
     }
 
+    /**
+     * Utility extension function to unzip a zip file to a directory
+     *
+     * @param directory The directory to unzip the file to
+     */
     private fun ZipFile.install(directory: File) {
         val zipEntries = entries().asSequence()
         var rootFolder = "/"
@@ -145,6 +179,9 @@ class InstallTask(
         if (installReference.isDesktopApp) createDesktopShortcut(rootFolder)
     }
 
+    /**
+     * Utility extension function to mount and install a .dmg file on a macOS system
+     */
     private fun File.installAsDmg() {
         val attachProcess = ProcessBuilder("hdiutil attach $absolutePath -nobrowse".split(" "))
             .redirectErrorStream(true)
@@ -172,6 +209,9 @@ class InstallTask(
             .waitFor()
     }
 
+    /**
+     * Utility extension function to extract a .tar.gz or .tar.xz file to a directory
+     */
     private fun File.installAsTar(directory: File) {
         val flags = when {
             absolutePath.endsWith(".tar.gz") -> "-xzf"
@@ -197,6 +237,11 @@ class InstallTask(
         if (installReference.isDesktopApp) createDesktopShortcut(rootFolder)
     }
 
+    /**
+     * Sets up the environment variables for a new installation for the current platform.
+     *
+     * @param rootFolder The root folder of the archive
+     */
     private fun setupEnvVariables(rootFolder: String) {
         val executableDirectory =
             "${File(directory).absolutePath}/bin/${installReference.id}/${
@@ -230,6 +275,11 @@ class InstallTask(
         }
     }
 
+    /**
+     * Creates a desktop shortcut and application menu entry for the current installation.
+     *
+     * @param rootFolder The root folder of the archive
+     */
     private fun createDesktopShortcut(rootFolder: String) {
         val executablePath =
             "${File(directory).absolutePath}/bin/${installReference.id}/${
@@ -297,6 +347,5 @@ class InstallTask(
             desktopFile.writeText(desktopFileContents)
             applicationMenuFile.writeText(desktopFileContents)
         }
-
     }
 }
