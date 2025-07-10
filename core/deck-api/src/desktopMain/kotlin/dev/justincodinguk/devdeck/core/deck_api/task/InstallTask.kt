@@ -31,7 +31,7 @@ import java.util.zip.ZipFile
  * @param version The version of the binary to be installed, if not empty then would force a URL installation even if the binary can be resolved by the system package manager.
  * @param httpClient The client to use for making GET requests
  */
-class InstallTask(
+class InstallTask private constructor(
     private val platform: Platform,
     private val installReference: InstallReference,
     private val version: String,
@@ -45,6 +45,7 @@ class InstallTask(
     private val directory = "${System.getProperty("user.home")}/.devdeck/"
 
     companion object {
+        
         /**
          * Creates an [InstallTask] for multiple packages to be installed via the system package manager
          *
@@ -103,6 +104,7 @@ class InstallTask(
     override val name = "Install ${installReference.name} in $directory"
 
     private val logger = LoggerFactory.getLogger("InstallTask")
+
     /**
      * Executes the [InstallTask].
      *
@@ -348,4 +350,28 @@ class InstallTask(
             applicationMenuFile.writeText(desktopFileContents)
         }
     }
+
+    /**
+     * Builder class for [InstallTask] with a single package
+     */
+    class Builder : Task.Builder<InstallTask> {
+        lateinit var platform: Platform
+        lateinit var installReference: InstallReference
+        var version: String = ""
+        lateinit var httpClient: HttpClient
+
+        override fun build() = InstallTask(platform, installReference, version, httpClient)
+    }
+
+    /**
+     * Builder class for [InstallTask] with multiple packages
+     */
+    class MultiplePackagesBuilder : Task.Builder<InstallTask> {
+        lateinit var platform: Platform
+        lateinit var installReferences: List<InstallReference>
+        lateinit var httpClient: HttpClient
+
+        override fun build() = InstallTask.multiplePackages(platform, installReferences, httpClient)
+    }
+
 }

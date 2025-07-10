@@ -54,6 +54,7 @@ class TaskHandler(private val batchSize: Int) : CoroutineScope {
      *
      * @return True if there are any running processes or tasks in the queue, false otherwise
      */
+
     fun isActive(): Boolean {
         return taskQueue.isNotEmpty() || runningProcesses.isNotEmpty()
     }

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
  * @param url The URL to fetch installation references from
  * @param installReferenceLoader The [InstallReferenceLoader] to use for loading references
  */
-class ReferenceTask(
+class ReferenceTask private constructor(
     private val url: String,
     private val installReferenceLoader: InstallReferenceLoader
 ) : Task {
@@ -22,5 +22,15 @@ class ReferenceTask(
     override suspend fun execute() {
         logger.info(name)
         installReferenceLoader.loadNetworkReference(url)
+    }
+
+    /**
+     * Builder class for [ReferenceTask].
+     */
+    class Builder : Task.Builder<ReferenceTask> {
+        lateinit var url: String
+        lateinit var installReferenceLoader: InstallReferenceLoader
+
+        override fun build() = ReferenceTask(url, installReferenceLoader)
     }
 }

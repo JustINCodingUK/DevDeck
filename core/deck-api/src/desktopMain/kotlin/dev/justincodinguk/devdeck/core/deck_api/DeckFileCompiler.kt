@@ -9,6 +9,7 @@ import dev.justincodinguk.devdeck.core.deck_api.task.ReferenceTask
 import dev.justincodinguk.devdeck.core.deck_api.task.RunTask
 import dev.justincodinguk.devdeck.core.deck_api.task.StepTask
 import dev.justincodinguk.devdeck.core.deck_api.task.Task
+import dev.justincodinguk.devdeck.core.deck_api.task.TaskFactory
 import dev.justincodinguk.devdeck.core.deck_api.task.TaskHandler
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -91,7 +92,10 @@ class DeckFileCompiler(
                             stepTaskName = line.trim().split(" ")[2]
                         } else if (line.lowercase().startsWith("step end")) {
                             step = false
-                            val stepTask = StepTask(stepTaskName, stepTasks.toList())
+                            val stepTask = TaskFactory.buildTask<StepTask.Builder> {
+                                taskName = stepTaskName
+                                this.tasks = stepTasks.toList()
+                            }
                             tasks.add(stepTask)
                             stepTasks.clear()
                         } else {
@@ -119,7 +123,8 @@ class DeckFileCompiler(
      * @return List of parsed [Task] objects
      * @throws [DeckFileSyntaxException] when the line has invalid syntax
      */
-    private fun parseTasks(line: String): List<Task> {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun parseTasks(line: String): List<Task> {
         val splitLine = line.split(" ")
         val command = splitLine.first().lowercase()
         val args = splitLine.subList(1, splitLine.size)
@@ -143,17 +148,24 @@ class DeckFileCompiler(
                 val tasks = mutableListOf<Task>()
                 if (pkgRefs.isNotEmpty()) {
                     val packageManagerInstallTask =
-                        InstallTask.multiplePackages(
-                            platform,
-                            pkgRefs,
-                            httpClient
-                        )
+                        TaskFactory.buildTask<InstallTask.MultiplePackagesBuilder> {
+                            platform = this@DeckFileCompiler.platform
+                            installReferences = pkgRefs
+                            httpClient = this@DeckFileCompiler.httpClient
+                        }
                     tasks.add(packageManagerInstallTask)
                 }
 
                 refsWithVersion.keys.toList().urlReferences()
                     .forEach {
-                        tasks += InstallTask(platform, it, refsWithVersion[it]!!, httpClient)
+                        val installTask = TaskFactory.buildTask<InstallTask.Builder> {
+                            platform = this@DeckFileCompiler.platform
+                            installReference = it
+                            version = refsWithVersion[it]!!
+                            httpClient = this@DeckFileCompiler.httpClient
+                        }
+
+                        tasks += installTask
                     }
                 return tasks
             }
@@ -165,13 +177,19 @@ class DeckFileCompiler(
                 if (args.size != 1) {
                     dir = args[2]
                 }
-                val gitInstallTask = InstallTask(
-                    platform,
-                    installReferenceLoader.getReference("git.git"),
-                    "",
-                    httpClient
-                )
-                val cloneTask = CloneTask(url, dir, gitInstallTask)
+
+                val gitInstallTask = TaskFactory.buildTask<InstallTask.Builder> {
+                    platform = this@DeckFileCompiler.platform
+                    installReferenceLoader.getReference("git.git")
+                    version = ""
+                    httpClient = this@DeckFileCompiler.httpClient
+                } as InstallTask
+
+                val cloneTask = TaskFactory.buildTask<CloneTask.Builder> {
+                    repository = url
+                    directory = dir
+                    this.gitInstallTask = gitInstallTask
+                }
                 return listOf(cloneTask)
             }
 
@@ -182,14 +200,22 @@ class DeckFileCompiler(
                 if (args.size != 1) {
                     dir = args.last()
                 }
-                val runTask = RunTask(runningCommand, dir)
+
+                val runTask = TaskFactory.buildTask<RunTask.Builder> {
+                    this.command = runningCommand
+                    projectDir = dir
+                }
                 return listOf(runTask)
             }
 
             // Example syntax: REFERENCE https://url.to/installrefs.json
             "reference" -> {
                 val url = args.first()
-                return listOf(ReferenceTask(url, installReferenceLoader))
+                val refTask = TaskFactory.buildTask<ReferenceTask.Builder> {
+                    this.url = url
+                    this.installReferenceLoader = this@DeckFileCompiler.installReferenceLoader
+                }
+                return listOf(refTask)
             }
 
             else -> {

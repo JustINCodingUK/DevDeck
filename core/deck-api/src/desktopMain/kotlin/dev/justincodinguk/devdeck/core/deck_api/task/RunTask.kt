@@ -12,7 +12,7 @@ import java.io.File
  * @param command The command to run
  * @param projectDir The directory to run the command in
  */
-class RunTask(
+class RunTask private constructor(
     private val command: String,
     private val projectDir: String
 ) : Task {
@@ -31,5 +31,15 @@ class RunTask(
         withContext(Dispatchers.IO) {
             command.runAsCommand(File(projectDir))
         }
+    }
+
+    /**
+     * Builder class for [RunTask].
+     */
+    class Builder : Task.Builder<RunTask> {
+        lateinit var command: String
+        lateinit var projectDir: String
+
+        override fun build() = RunTask(command, projectDir)
     }
 }

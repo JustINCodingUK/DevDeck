@@ -12,7 +12,7 @@ import java.io.File
  * @param directory The directory to clone the repository into
  * @param gitInstallTask The task to execute if git is not installed
  */
-class CloneTask(
+class CloneTask private constructor(
     private val repository: String,
     private val directory: String,
     private val gitInstallTask: InstallTask,
@@ -39,5 +39,16 @@ class CloneTask(
                 execute()
             }
         }
+    }
+
+    /**
+     * Builder class for [CloneTask]
+     */
+    class Builder : Task.Builder<CloneTask> {
+        lateinit var repository: String
+        lateinit var directory: String
+        lateinit var gitInstallTask: InstallTask
+
+        override fun build() = CloneTask(repository, directory, gitInstallTask)
     }
 }
