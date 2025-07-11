@@ -371,7 +371,7 @@ class InstallTask private constructor(
         lateinit var installReferences: List<InstallReference>
         lateinit var httpClient: HttpClient
 
-        override fun build() = InstallTask.multiplePackages(platform, installReferences, httpClient)
+        override fun build() = multiplePackages(platform, installReferences, httpClient)
     }
 
 }
