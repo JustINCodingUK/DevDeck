@@ -1,4 +1,5 @@
 import com.vanniktech.maven.publish.SonatypeHost
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,14 +9,29 @@ plugins {
 
 group = "io.github.justincodinguk.devdeck"
 val artifactId = "deck-api"
-version = "1.0.0"
+version = "0.1.1"
+
+val sonatypeProperties = Properties().apply {
+    val file = rootProject.file("central.sonatype.properties")
+    if(file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
+sonatypeProperties.forEach { key, value ->
+    if (project.findProperty(key as String) == null) {
+        project.extensions.extraProperties[key] = value
+    }
+}
 
 kotlin {
     jvm("desktop")
+
     sourceSets.commonMain.dependencies {
         api(libs.kotlinx.coroutines.core)
-        implementation(project(":core:logging"))
         implementation(libs.ktor.client.cio)
+        implementation(libs.slf4j.api)
+        implementation(libs.logback.classic)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.json)
         implementation(libs.kotlinx.serialization)
