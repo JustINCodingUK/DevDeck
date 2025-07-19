@@ -6,6 +6,7 @@ xcuserdata
 !src/**/build/
 local.properties
 firebase.properties
+central.sonatype.properties
 .idea
 .DS_Store
 captures

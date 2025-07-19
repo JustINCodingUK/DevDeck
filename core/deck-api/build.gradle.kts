@@ -9,7 +9,7 @@ plugins {
 
 group = "io.github.justincodinguk.devdeck"
 val artifactId = "deck-api"
-version = "0.1.1"
+version = "0.1.2"
 
 val sonatypeProperties = Properties().apply {
     val file = rootProject.file("central.sonatype.properties")

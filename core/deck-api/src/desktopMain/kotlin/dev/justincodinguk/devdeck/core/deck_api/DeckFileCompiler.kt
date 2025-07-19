@@ -18,6 +18,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.lang.Exception
+import kotlin.properties.Delegates
 
 /**
  * Compiles and parses a `.deckfile` file to produce a [DeckFile] object containing executable tasks.
@@ -30,8 +31,9 @@ import java.lang.Exception
  * @param referencesDirectory Directory where installation references are stored or cached.
  * @param taskBatchSize Number of tasks to run in parallel.
  */
-class DeckFileCompiler(
+class DeckFileCompiler private constructor(
     private val filePath: String,
+    private val fileName: String? = null,
     referencesDirectory: String,
     taskBatchSize: Int
 ) {
@@ -108,12 +110,12 @@ class DeckFileCompiler(
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (e: IndexOutOfBoundsException) {
                 throw DeckFileSyntaxException(filePath, line)
             }
         }
 
-        return DeckFile(deckName, deckAuthor, tasks, taskHandler)
+        return DeckFile(fileName ?: deckName, deckAuthor, tasks, taskHandler)
     }
 
     /**
@@ -240,4 +242,27 @@ class DeckFileCompiler(
         (it.getReferenceResultForPlatform(platform).isUrl)
     }
 
+    /**
+     * Builder class for [DeckFileCompiler]
+     */
+    class Builder {
+        var fileName: String? = null
+        lateinit var filePath: String
+        lateinit var referencesDirectory: String
+        var taskBatchSize by Delegates.notNull<Int>()
+
+        fun build() = DeckFileCompiler(filePath, fileName, referencesDirectory, taskBatchSize)
+    }
+
+}
+
+/**
+ * DSL function to build a [DeckFileCompiler] object
+ * @param block Lambda function to configure the [DeckFileCompiler.Builder]
+ * @return [DeckFileCompiler] object with the specified configuration
+ */
+fun deckFileCompiler(block: DeckFileCompiler.Builder.() -> Unit) : DeckFileCompiler {
+    val builder = DeckFileCompiler.Builder()
+    builder.block()
+    return builder.build()
 }
