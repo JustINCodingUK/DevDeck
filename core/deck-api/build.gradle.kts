@@ -19,9 +19,7 @@ val sonatypeProperties = Properties().apply {
 }
 
 sonatypeProperties.forEach { key, value ->
-    if (project.findProperty(key as String) == null) {
-        project.extensions.extraProperties[key] = value
-    }
+    project.extensions.extraProperties[key as String] = value
 }
 
 kotlin {

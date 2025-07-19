@@ -1,0 +1,3 @@
+deck.start
+
+RUN "./gradlew --refresh-dependencies" IN /home/justinw/IdeaProjects/DevDeck

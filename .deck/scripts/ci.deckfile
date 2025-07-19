@@ -1,0 +1,4 @@
+deck.name=ci
+deck.start
+RUN "./gradlew build" IN /home/justinw/IdeaProjects/DevDeck
+RUN "./gradlew :core:deck-api:publishToMavenCentral --no-configuration-cache" IN /home/justinw/IdeaProjects/DevDeck
