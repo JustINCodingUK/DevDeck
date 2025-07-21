@@ -1,4 +1,4 @@
-package dev.justincodinguk.devdeck.core.ui.login
+package dev.justincodinguk.devdeck.core.ui.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

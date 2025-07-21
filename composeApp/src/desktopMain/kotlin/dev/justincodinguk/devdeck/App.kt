@@ -12,7 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.justincodinguk.devdeck.core.ui.theme.DevDeckTheme
 import dev.justincodinguk.devdeck.features.auth.AuthViewModel
 import dev.justincodinguk.devdeck.nav.Routes
-import dev.justincodinguk.devdeck.features.auth.LoginScreen
+import dev.justincodinguk.devdeck.features.auth.AuthScreen
 import dev.justincodinguk.devdeck.nav.Dashboard
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -26,11 +26,11 @@ fun App() {
             val navController = rememberNavController()
             NavHost(
                 navController = navController,
-                startDestination = Routes.Dashboard.name
+                startDestination = Routes.Auth.name
             ) {
                 composable(Routes.Auth.name) {
                     val authViewModel = koinViewModel<AuthViewModel>()
-                    LoginScreen(authViewModel, isDarkTheme) { navController.navigate(Routes.Dashboard.name) }
+                    AuthScreen(authViewModel, isDarkTheme) { navController.navigate(Routes.Dashboard.name) }
                 }
 
                 composable(Routes.Dashboard.name) {

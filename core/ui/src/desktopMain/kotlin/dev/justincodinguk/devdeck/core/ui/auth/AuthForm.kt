@@ -1,6 +1,5 @@
-package dev.justincodinguk.devdeck.core.ui.login
+package dev.justincodinguk.devdeck.core.ui.auth
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,17 +24,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import devdeck.core.ui.generated.resources.Res
 import devdeck.core.ui.generated.resources.github
-import dev.justincodinguk.devdeck.core.ui.theme.DevDeckTheme
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun LoginUI(
+fun AuthForm(
+    headerText: String,
+    subHeaderText: String,
+    submitButtonText: String,
     emailText: String,
     passwordText: String,
     onEmailTextChange: (String) -> Unit,
     onPasswordTextChange: (String) -> Unit,
     onSubmit: () -> Unit,
-    onGithubLogin: () -> Unit,
+    showOAuth: Boolean,
+    onGithubLogin: () -> Unit = {},
+    displayNameText: String = "",
+    onDisplayNameTextChange: (String) -> Unit = {},
+    showDisplayNameField: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -44,7 +49,7 @@ fun LoginUI(
         modifier = modifier.padding(64.dp)
     ) {
         Text(
-            "Welcome",
+            headerText,
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.padding(2.dp),
             color = MaterialTheme.colorScheme.primary,
@@ -52,7 +57,7 @@ fun LoginUI(
         )
 
         Text(
-            "Login to your account to continue",
+            subHeaderText,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(0.dp),
             color = MaterialTheme.colorScheme.primary,
@@ -60,6 +65,22 @@ fun LoginUI(
         )
 
         Spacer(Modifier.height(64.dp))
+
+        if(showDisplayNameField) {
+            OutlinedTextField(
+                value = displayNameText,
+                onValueChange = onDisplayNameTextChange,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .width(512.dp),
+                shape = RoundedCornerShape(32.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
+                label = { Text("Name") }
+            )
+        }
 
         OutlinedTextField(
             value = emailText,
@@ -96,36 +117,30 @@ fun LoginUI(
             onClick = onSubmit,
             modifier = Modifier.width(240.dp)) {
             Text(
-                "LOG IN",
+                submitButtonText,
                 fontSize = 20.sp
             )
         }
 
-        OrDivider()
+        if(showOAuth) {
 
-        Button(
-            onClick = onGithubLogin,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-            modifier = Modifier.width(300.dp)) {
-            Image(
-                painter = painterResource(Res.drawable.github),
-                modifier = Modifier.size(36.dp),
-                contentDescription = ""
-            )
-            Spacer(Modifier.width(12.dp))
-            Text(
-                "Continue with GitHub",
-                fontSize = 16.sp,
-                color = Color.White
-            )
+            OrDivider()
+            Button(
+                onClick = onGithubLogin,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                modifier = Modifier.width(300.dp)) {
+                Image(
+                    painter = painterResource(Res.drawable.github),
+                    modifier = Modifier.size(36.dp),
+                    contentDescription = ""
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    "Continue with GitHub",
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
+            }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun LoginUIPreview() {
-    DevDeckTheme(darkTheme = false) {
-        LoginUI("HEYY", "meow", {}, {}, {},{})
     }
 }
