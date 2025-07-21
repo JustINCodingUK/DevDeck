@@ -34,6 +34,7 @@ import kotlin.properties.Delegates
 class DeckFileCompiler private constructor(
     private val filePath: String,
     private val fileName: String? = null,
+    private val projectVariables: Map<String, String> = mapOf(),
     referencesDirectory: String,
     taskBatchSize: Int
 ) {
@@ -77,8 +78,11 @@ class DeckFileCompiler private constructor(
         var stepTaskName = ""
         val stepTasks = mutableListOf<Task>()
 
-        deckFileRaw.forEach {
-            val line = it.trim()
+        deckFileRaw.forEach { rawLine ->
+            var line = rawLine.trim()
+            projectVariables.forEach {
+                line = line.replace("\$${it.key}", it.value)
+            }
             try {
                 if (!scriptStarted) {
                     if (line.startsWith("deck.name")) {
@@ -247,11 +251,12 @@ class DeckFileCompiler private constructor(
      */
     class Builder {
         var fileName: String? = null
+        var projectVariables: Map<String, String> = mapOf()
         lateinit var filePath: String
         lateinit var referencesDirectory: String
         var taskBatchSize by Delegates.notNull<Int>()
 
-        fun build() = DeckFileCompiler(filePath, fileName, referencesDirectory, taskBatchSize)
+        fun build() = DeckFileCompiler(filePath, fileName, projectVariables, referencesDirectory, taskBatchSize)
     }
 
 }

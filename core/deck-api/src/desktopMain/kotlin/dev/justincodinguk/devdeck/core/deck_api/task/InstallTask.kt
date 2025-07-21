@@ -126,7 +126,7 @@ class InstallTask private constructor(
             val fileName = url.split("/").last()
             val fileExtension = fileName.split(".").last()
 
-            val file = File("$directory/bin/downloads/$fileName")//.apply { createNewFile() }
+            val file = File("$directory/bin/downloads/$fileName")
             httpClient.prepareGet(url) {
                 timeout {
                     requestTimeoutMillis = HttpTimeoutConfig.INFINITE_TIMEOUT_MS
