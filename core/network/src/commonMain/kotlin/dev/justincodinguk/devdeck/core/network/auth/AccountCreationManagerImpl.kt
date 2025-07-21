@@ -42,9 +42,11 @@ internal class AccountCreationManagerImpl : AccountCreationManager {
         withTimeout(Duration.ofMillis(timeoutMillis)) {
             while (!user.isEmailVerified) {
                 user.reload()
-                delay(1000)
+                delay(2500)
             }
         }
+
+        user.updateProfile(displayName = displayName)
 
         val newUser = DevDeckUser(
             name = displayName,

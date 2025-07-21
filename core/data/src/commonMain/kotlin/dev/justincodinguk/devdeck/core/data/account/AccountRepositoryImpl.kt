@@ -3,7 +3,7 @@ package dev.justincodinguk.devdeck.core.data.account
 import dev.justincodinguk.devdeck.core.network.auth.AccountManager
 import kotlinx.coroutines.flow.flow
 
-class AccountRepositoryImpl(
+internal class AccountRepositoryImpl(
     private val accountManager: AccountManager
 ) : AccountRepository {
 
