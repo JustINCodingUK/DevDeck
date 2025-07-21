@@ -17,7 +17,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.lang.Exception
 import kotlin.properties.Delegates
 
 /**
@@ -28,6 +27,8 @@ import kotlin.properties.Delegates
  * resolution of install references.
  *
  * @param filePath Path to the `.deckfile` file containing the setup script.
+ * @param fileName Optional name of the deckfile.
+ * @param projectVariables Optional map of project variables to be used in the script.
  * @param referencesDirectory Directory where installation references are stored or cached.
  * @param taskBatchSize Number of tasks to run in parallel.
  */
