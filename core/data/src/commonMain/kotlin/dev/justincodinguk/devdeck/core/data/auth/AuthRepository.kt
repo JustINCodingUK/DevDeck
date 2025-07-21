@@ -5,15 +5,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun isSignedIn(): Boolean
+    fun signIn(email: String, password: String): Flow<DevDeckUser>
 
-    fun getCurrentUser(): Flow<DevDeckUser>
+    fun signInWithGithub(): Flow<DevDeckUser>
 
-    fun signIn(email: String, password: String) : Flow<DevDeckUser>
+    fun signInWithGithubToken(token: String): Flow<DevDeckUser>
 
-    fun signInWithGithub() : Flow<DevDeckUser>
-
-    fun signInWithGithubToken(token: String) : Flow<DevDeckUser>
+    fun registerEmailAccount(
+        email: String,
+        password: String,
+        displayName: String
+    ): Flow<DevDeckUser>
 
     suspend fun signOut()
 
