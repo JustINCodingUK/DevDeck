@@ -9,7 +9,7 @@ jetbrainsKotlinJvm = "2.1.21"
 agp = "8.10.1"
 kotlinStdlib = "2.1.21"
 koin = "4.1.0"
-ksp = "2.1.21-2.0.2"
+ksp = "2.1.21-2.0.1"
 compose-nav="2.9.0-beta03"
 firebase-kt="2.1.0"
 credence = "1.0.0-dev07"
@@ -21,6 +21,8 @@ kotlinx-serialization="1.9.0"
 ktor="3.2.0"
 commons="1.10.0"
 mvn-publish="0.30.0"
+google-autoservice="1.1.1"
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -47,8 +49,8 @@ ktor-client-content-negotiation = { group = "io.ktor", name="ktor-client-content
 ktor-client-json = { group = "io.ktor", name="ktor-serialization-kotlinx-json", version.ref="ktor"}
 credence-oauth-github = { group = "dev.justincodinguk.credence", name="oauth-github", version.ref="credence"}
 credence-core = {group="dev.justincodinguk.credence", name="foundation", version.ref="credence"}
-commons-text = {group="org.apache.commons", name="commons-text", version.ref="commons"}
-
+google-autoservice = { group = "com.google.auto.service", name="auto-service", version.ref="google-autoservice"}
+ksp-api = { group = "com.google.devtools.ksp", name="symbol-processing-api", version.ref="ksp"}
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
