@@ -35,10 +35,13 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.firebase.auth)
+
             implementation(libs.koin.core)
-            implementation(project(":core:di"))
+
+            implementation(projects.core.di)
+            implementation(projects.core.model)
+
             implementation("dev.justincodinguk.credence:oauth-github:1.0.0-dev07") { isChanging = true }
-            implementation(project(":core:model"))
         }
     }
 }

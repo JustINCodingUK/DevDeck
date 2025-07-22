@@ -27,13 +27,14 @@ kotlin {
 
     sourceSets.commonMain.dependencies {
         api(libs.kotlinx.coroutines.core)
-        implementation(libs.ktor.client.cio)
+        implementation(libs.kotlinx.serialization)
+
         implementation(libs.slf4j.api)
         implementation(libs.logback.classic)
+
+        implementation(libs.ktor.client.cio)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.json)
-        implementation(libs.kotlinx.serialization)
-        implementation(libs.commons.text)
     }
 }
 

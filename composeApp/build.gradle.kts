@@ -42,17 +42,20 @@ kotlin {
     sourceSets {
         val desktopMain by getting
         commonMain.dependencies {
-            implementation(project(":core:ui"))
-            implementation(project(":features:auth"))
-            implementation(project(":core:logging"))
-            implementation(project(":core:di"))
-            implementation(project(":core:datastore"))
-            implementation(compose.materialIconsExtended)
+            implementation(projects.core.ui)
+            implementation(projects.core.logging)
+            implementation(projects.core.di)
+            implementation(projects.core.datastore)
+            implementation(projects.features.auth)
+
             implementation(libs.firebase.common)
+
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.nav)
             implementation(libs.koin.core)
+
+            implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -63,9 +66,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)

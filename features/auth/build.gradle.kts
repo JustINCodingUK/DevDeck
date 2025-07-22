@@ -19,17 +19,19 @@ kotlin {
 
     sourceSets {
         commonMain {
-
             dependencies {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.compose.nav)
                 implementation(libs.koin.core)
-                implementation(project(":core:ui"))
-                implementation(project(":core:di"))
-                implementation(project(":core:model"))
-                implementation(project(":core:data"))
+
+                implementation(projects.core.ui)
+                implementation(projects.core.di)
+                implementation(projects.core.model)
+                implementation(projects.core.data)
+
                 implementation(libs.kotlin.stdlib)
+
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
