@@ -2,6 +2,8 @@ package dev.justincodinguk.devdeck.core.data.auth
 
 import dev.justincodinguk.devdeck.core.network.auth.AccountCreationManager
 import dev.justincodinguk.devdeck.core.network.auth.AccountManager
+import dev.justincodinguk.devdeck.util.Result
+import dev.justincodinguk.devdeck.util.toLiveResult
 import kotlinx.coroutines.flow.flow
 
 internal class AuthRepositoryImpl(
@@ -10,18 +12,21 @@ internal class AuthRepositoryImpl(
 ) : AuthRepository {
 
     override fun signIn(email: String, password: String) = flow {
+        emit(Result.Loading)
         val result = accountManager.signIn(email, password)
-        emit(result.getOrThrow())
+        emit(result.toLiveResult())
     }
 
     override fun signInWithGithub() = flow {
+        emit(Result.Loading)
         val result = accountManager.signInWithGithub()
-        emit(result.getOrThrow())
+        emit(result.toLiveResult())
     }
 
     override fun signInWithGithubToken(token: String) = flow {
+        emit(Result.Loading)
         val result = accountManager.signInWithGithubToken(token)
-        emit(result.getOrThrow())
+        emit(result.toLiveResult())
     }
 
     override fun registerEmailAccount(
@@ -29,10 +34,11 @@ internal class AuthRepositoryImpl(
         password: String,
         displayName: String
     ) = flow {
+        emit(Result.Loading)
         with(accountCreationManager) {
             beginAccountCreation(email, password)
             onVerificationCompletion(displayName, 60*1000) { user ->
-                emit(user)
+                emit(Result.Success(user))
             }
         }
     }

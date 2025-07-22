@@ -1,12 +1,13 @@
 package dev.justincodinguk.devdeck.core.data.account
 
 import dev.justincodinguk.devdeck.core.model.DevDeckUser
+import dev.justincodinguk.devdeck.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface AccountRepository {
 
-    fun isSignedIn(): Boolean
+    val isSignedIn: Boolean
 
-    fun getCurrentUser(): Flow<DevDeckUser>
+    fun getCurrentUser(): Flow<Result<DevDeckUser>>
 
 }

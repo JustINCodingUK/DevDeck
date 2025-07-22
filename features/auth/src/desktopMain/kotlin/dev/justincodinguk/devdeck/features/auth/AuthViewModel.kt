@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.justincodinguk.devdeck.core.data.account.AccountRepository
 import dev.justincodinguk.devdeck.core.data.auth.AuthRepository
+import dev.justincodinguk.devdeck.util.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -17,15 +18,31 @@ class AuthViewModel(
     val authState = _authState.asStateFlow()
 
     init {
-        if(accountRepository.isSignedIn()) {
+        if(accountRepository.isSignedIn) {
             viewModelScope.launch {
                 accountRepository.getCurrentUser().collect {
-                    _authState.emit(
-                        authState.value.copy(
-                            authStatus = AuthStatus.LOGGED_IN,
-                            user = it
-                        )
-                    )
+                    when(it) {
+                        is Result.Success -> {
+                            _authState.emit(
+                                authState.value.copy(
+                                    authStatus = AuthStatus.LOGGED_IN,
+                                    user = it.data
+                                )
+                            )
+                        }
+
+                        is Result.Loading -> {
+                            _authState.emit(
+                                authState.value.copy(
+                                    authStatus = AuthStatus.WAITING
+                                )
+                            )
+                        }
+
+                        is Result.Error -> {
+                            // TODO
+                        }
+                    }
                 }
             }
         }
@@ -36,36 +53,64 @@ class AuthViewModel(
             val email = authState.value.emailText
             val password = authState.value.passwordText
 
-            _authState.emit(authState.value.copy(authStatus = AuthStatus.WAITING))
-
             authRepository.signIn(email, password).collect {
-                _authState.emit(
-                    authState.value.copy(
-                        authStatus = AuthStatus.LOGGED_IN,
-                        user = it
-                    )
-                )
+                when(it) {
+                    is Result.Success -> {
+                        _authState.emit(
+                            authState.value.copy(
+                                authStatus = AuthStatus.LOGGED_IN,
+                                user = it.data
+                            )
+                        )
+                    }
+
+                    is Result.Loading -> {
+                        _authState.emit(
+                            authState.value.copy(
+                                authStatus = AuthStatus.WAITING
+                            )
+                        )
+                    }
+
+                    is Result.Error -> {
+                        // TODO
+                    }
+                }
             }
         }
     }
 
     fun loginWithGithub() {
         viewModelScope.launch {
-            _authState.emit(authState.value.copy(authStatus = AuthStatus.WAITING))
             authRepository.signInWithGithub().collect {
-                _authState.emit(
-                    authState.value.copy(
-                        authStatus = AuthStatus.LOGGED_IN,
-                        user = it
-                    )
-                )
+                when(it) {
+                    is Result.Success -> {
+                        _authState.emit(
+                            authState.value.copy(
+                                authStatus = AuthStatus.LOGGED_IN,
+                                user = it.data
+                            )
+                        )
+                    }
+
+                    is Result.Loading -> {
+                        _authState.emit(
+                            authState.value.copy(
+                                authStatus = AuthStatus.WAITING
+                            )
+                        )
+                    }
+
+                    is Result.Error -> {
+                        // TODO
+                    }
+                }
             }
         }
     }
 
     fun registerEmailAccount() {
         viewModelScope.launch {
-            _authState.emit(authState.value.copy(authStatus = AuthStatus.WAITING))
             val newUserFlow = authRepository.registerEmailAccount(
                 authState.value.emailText,
                 authState.value.passwordText,
@@ -73,12 +118,28 @@ class AuthViewModel(
             )
             _authState.emit(authState.value.copy(authStatus = AuthStatus.VERIFICATION))
             newUserFlow.collect {
-                _authState.emit(
-                    authState.value.copy(
-                        authStatus = AuthStatus.LOGGED_IN,
-                        user = it
-                    )
-                )
+                when(it) {
+                    is Result.Success -> {
+                        _authState.emit(
+                            authState.value.copy(
+                                authStatus = AuthStatus.LOGGED_IN,
+                                user = it.data
+                            )
+                        )
+                    }
+
+                    is Result.Loading -> {
+                        _authState.emit(
+                            authState.value.copy(
+                                authStatus = AuthStatus.WAITING
+                            )
+                        )
+                    }
+
+                    is Result.Error -> {
+                        // TODO
+                    }
+                }
             }
         }
     }

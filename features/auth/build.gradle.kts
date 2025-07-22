@@ -29,6 +29,7 @@ kotlin {
                 implementation(projects.core.di)
                 implementation(projects.core.model)
                 implementation(projects.core.data)
+                implementation(projects.core.util)
 
                 implementation(libs.kotlin.stdlib)
 

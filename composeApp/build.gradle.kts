@@ -43,7 +43,7 @@ kotlin {
         val desktopMain by getting
         commonMain.dependencies {
             implementation(projects.core.ui)
-            implementation(projects.core.logging)
+            implementation(projects.core.util)
             implementation(projects.core.di)
             implementation(projects.core.datastore)
             implementation(projects.features.auth)
