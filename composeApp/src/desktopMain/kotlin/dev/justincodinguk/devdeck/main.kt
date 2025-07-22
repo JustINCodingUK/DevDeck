@@ -4,7 +4,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import dev.justincodinguk.devdeck.di.KoinModuleLoader
+import dev.justincodinguk.devdeck.core.di.gradleProject
 import dev.justincodinguk.devdeck.firebase.Firebase
 import org.koin.compose.KoinApplication
 
@@ -17,7 +17,7 @@ fun main() = application {
 
     KoinApplication(
         application = {
-            modules(KoinModuleLoader.allModules())
+            modules(gradleProject())
         }
     ) {
         Window(

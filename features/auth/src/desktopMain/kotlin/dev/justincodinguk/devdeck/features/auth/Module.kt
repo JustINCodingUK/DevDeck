@@ -1,13 +1,10 @@
 package dev.justincodinguk.devdeck.features.auth
 
-import dev.justincodinguk.devdeck.core.di.KoinModuleProvider
+import dev.justincodinguk.devdeck.core.di.KoinModule
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
+@KoinModule
 val authFeatureModule = module {
     viewModel<AuthViewModel> { AuthViewModel(get(), get()) }
-}
-
-class AuthFeatureModuleInit : KoinModuleProvider {
-    override fun load() = listOf(authFeatureModule)
 }

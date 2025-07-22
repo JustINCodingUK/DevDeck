@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.buildconfig)
+    alias(libs.plugins.ksp)
 }
 
 val properties = Properties().apply {
@@ -33,15 +34,25 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(libs.firebase.auth)
+        commonMain {
+            dependencies {
+                implementation(libs.firebase.auth)
 
-            implementation(libs.koin.core)
+                implementation(libs.koin.core)
 
-            implementation(projects.core.di)
-            implementation(projects.core.model)
+                implementation(projects.core.model)
+                implementation(projects.core.di)
+                implementation("dev.justincodinguk.credence:oauth-github:1.0.0-dev07") { isChanging = true }
+            }
+        }
 
-            implementation("dev.justincodinguk.credence:oauth-github:1.0.0-dev07") { isChanging = true }
+        val desktopMain by getting {
+            resources.srcDir("build/generated/ksp/desktop/desktopMain/resources")
         }
     }
+}
+
+
+dependencies {
+    add("kspDesktop", projects.core.di)
 }

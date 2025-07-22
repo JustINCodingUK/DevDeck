@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.buildconfig)
+    alias(libs.plugins.ksp)
 }
 
 val localProperties = Properties().apply {
@@ -76,6 +77,10 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
+}
+
+dependencies {
+    add("kspDesktop", projects.core.di)
 }
 
 

@@ -44,6 +44,10 @@ kotlin {
             }
         }
 
+        val desktopMain by getting {
+            resources.srcDir("build/generated/ksp/desktop/desktopMain/resources")
+        }
+
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
@@ -52,3 +56,6 @@ kotlin {
     }
 }
 
+dependencies {
+    add("kspDesktop", projects.core.di)
+}
