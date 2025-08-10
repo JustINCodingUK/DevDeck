@@ -1,4 +1,4 @@
-package dev.justincodinguk.devdeck.core.di.generator
+package dev.justincodinguk.devdeck.core.di.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -9,7 +9,6 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import dev.justincodinguk.devdeck.core.di.KoinModule
 import dev.justincodinguk.devdeck.core.di.KoinModuleProvider
-import org.koin.core.module.Module
 import java.io.OutputStreamWriter
 
 class KoinModuleProcessor(

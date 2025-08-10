@@ -14,6 +14,12 @@ internal class AccountManagerImpl : AccountManager {
     private val auth = Firebase.auth
     private var currentUser: DevDeckUser? = null
 
+    init {
+        if(BuildConfig.DEBUG) {
+            auth.useEmulator("127.0.0.1", 9099)
+        }
+    }
+
     override fun isSignedIn(): Boolean = auth.currentUser != null
 
     override fun getCurrentUser(): Result<DevDeckUser> {

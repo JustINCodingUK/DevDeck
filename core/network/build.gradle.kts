@@ -17,11 +17,17 @@ val properties = Properties().apply {
 val ghClientId = properties["oauth.github.clientid"] as String
 val ghClientSecret = properties["oauth.github.client_secret"] as String
 val ghRedirectUri = properties["oauth.github.redirect_uri"] as String
+val debugRaw = properties["debug"] as String
+var debug = false
+if(debugRaw == "true") {
+    debug = true
+}
 
 buildConfig {
-    buildConfigField("GITHUB_OAUTH_CLIENTID", ghClientId)
-    buildConfigField("GITHUB_OAUTH_CLIENT_SECRET", ghClientSecret)
-    buildConfigField("GITHUB_OAUTH_REDIRECT_URI", ghRedirectUri)
+    buildConfigField("String","GITHUB_OAUTH_CLIENTID", ghClientId)
+    buildConfigField("String", "GITHUB_OAUTH_CLIENT_SECRET", ghClientSecret)
+    buildConfigField("String", "GITHUB_OAUTH_REDIRECT_URI", ghRedirectUri)
+    buildConfigField("Boolean", "DEBUG", debug)
 }
 
 configurations.all {
@@ -37,6 +43,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.firebase.auth)
+                implementation(libs.firebase.firestore)
 
                 implementation(libs.koin.core)
 

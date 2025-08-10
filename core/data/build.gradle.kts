@@ -13,6 +13,7 @@ kotlin {
                 implementation(projects.core.di)
                 implementation(projects.core.model)
                 implementation(projects.core.util)
+                implementation(projects.core.deckApi)
 
                 implementation(libs.kotlinx.coroutines.core)
 

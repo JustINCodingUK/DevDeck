@@ -4,12 +4,12 @@ import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import java.util.ServiceLoader
 
-fun KoinApplication.gradleProject(): List<Module> {
+fun KoinApplication.gradleProject() : KoinApplication {
     val serviceLoaders = ServiceLoader.load(KoinModuleProvider::class.java)
-    val modules = mutableListOf<Module>()
+    val spiLoadedModules = mutableListOf<Module>()
 
     serviceLoaders.forEach {
-        modules.addAll(it.load())
+        spiLoadedModules.addAll(it.load())
     }
-    return modules
+    return modules(spiLoadedModules)
 }

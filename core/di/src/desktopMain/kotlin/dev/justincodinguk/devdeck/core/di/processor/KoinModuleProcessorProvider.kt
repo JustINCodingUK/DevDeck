@@ -1,4 +1,4 @@
-package dev.justincodinguk.devdeck.core.di.generator
+package dev.justincodinguk.devdeck.core.di.processor
 
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment

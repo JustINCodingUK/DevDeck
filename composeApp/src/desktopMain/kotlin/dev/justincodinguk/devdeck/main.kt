@@ -16,9 +16,7 @@ fun main() = application {
     val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
 
     KoinApplication(
-        application = {
-            modules(gradleProject())
-        }
+        application = { gradleProject() }
     ) {
         Window(
             onCloseRequest = ::exitApplication,

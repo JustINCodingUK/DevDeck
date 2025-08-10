@@ -1,5 +1,6 @@
 package dev.justincodinguk.devdeck.core.network.auth
 
+import DevDeck.core.network.BuildConfig
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import dev.gitlive.firebase.auth.FirebaseUser
@@ -15,6 +16,12 @@ internal class AccountCreationManagerImpl : AccountCreationManager {
     private val auth = Firebase.auth
 
     private lateinit var user: FirebaseUser
+
+    init {
+        if(BuildConfig.DEBUG) {
+            auth.useEmulator("127.0.0.1", 9099)
+        }
+    }
 
     override suspend fun beginAccountCreation(email: String, password: String): Result<Unit> {
         try {
