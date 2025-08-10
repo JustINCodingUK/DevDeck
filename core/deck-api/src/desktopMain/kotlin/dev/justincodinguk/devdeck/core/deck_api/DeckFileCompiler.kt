@@ -39,7 +39,22 @@ class DeckFileCompiler private constructor(
     referencesDirectory: String,
     taskBatchSize: Int
 ) {
-    private val deckFileRaw = File(filePath).readLines()
+
+    private lateinit var deckFileRaw: List<String>
+
+    private constructor(
+        fileContents: List<String>,
+        projectVariables: Map<String, String>,
+        referencesDirectory: String,
+        taskBatchSize: Int
+    ) : this(
+        filePath = "",
+        projectVariables = projectVariables,
+        referencesDirectory = referencesDirectory,
+        taskBatchSize = taskBatchSize
+    ) {
+        deckFileRaw = fileContents
+    }
 
     /** [TaskHandler] object to manage running tasks */
     private val taskHandler = TaskHandler(taskBatchSize)
@@ -71,6 +86,11 @@ class DeckFileCompiler private constructor(
      * @throws DeckFileSyntaxException when the deckfile has invalid syntax.
      */
     fun loadDeckFile(): DeckFile {
+
+        if(!::deckFileRaw.isInitialized) {
+            deckFileRaw = File(filePath).readLines()
+        }
+
         var scriptStarted = false
         var deckName = "Unspecified"
         var deckAuthor = "Unspecified"
@@ -248,27 +268,63 @@ class DeckFileCompiler private constructor(
     }
 
     /**
-     * Builder class for [DeckFileCompiler]
+     * Builder class for [DeckFileCompiler] which loads file contents from a file
      */
-    class Builder {
+    class FileBuilder {
         var fileName: String? = null
         var projectVariables: Map<String, String> = mapOf()
         lateinit var filePath: String
         lateinit var referencesDirectory: String
         var taskBatchSize by Delegates.notNull<Int>()
 
-        fun build() = DeckFileCompiler(filePath, fileName, projectVariables, referencesDirectory, taskBatchSize)
+        fun build() = DeckFileCompiler(
+            filePath,
+            fileName,
+            projectVariables,
+            referencesDirectory,
+            taskBatchSize
+        )
     }
 
+    /**
+     * Builder class for [DeckFileCompiler] which loads file contents from a string
+     */
+    class InMemoryBuilder {
+        lateinit var fileContents: List<String>
+        var projectVariables: Map<String, String> = mapOf()
+        lateinit var referencesDirectory: String
+        var taskBatchSize by Delegates.notNull<Int>()
+
+        fun build() = DeckFileCompiler(
+            fileContents,
+            projectVariables,
+            referencesDirectory,
+            taskBatchSize
+        )
+    }
+}
+
+typealias InMemoryInitializer = DeckFileCompiler.InMemoryBuilder.() -> Unit
+typealias FileInitializer = DeckFileCompiler.FileBuilder.() -> Unit
+
+/**
+ * DSL function to build a [DeckFileCompiler] object which loads file contents from a file
+ * @param init Lambda function to configure the [FileInitializer]
+ * @return [DeckFileCompiler] object with the specified configuration
+ */
+fun deckFileCompiler(init: FileInitializer): DeckFileCompiler {
+    val builder = DeckFileCompiler.FileBuilder()
+    builder.init()
+    return builder.build()
 }
 
 /**
- * DSL function to build a [DeckFileCompiler] object
- * @param block Lambda function to configure the [DeckFileCompiler.Builder]
+ * DSL function to build a [DeckFileCompiler] object which loads file contents from a string
+ * @param init Lambda function to configure the [InMemoryInitializer]
  * @return [DeckFileCompiler] object with the specified configuration
  */
-fun deckFileCompiler(block: DeckFileCompiler.Builder.() -> Unit) : DeckFileCompiler {
-    val builder = DeckFileCompiler.Builder()
-    builder.block()
+fun inMemoryDeckFileCompiler(init: InMemoryInitializer): DeckFileCompiler {
+    val builder = DeckFileCompiler.InMemoryBuilder()
+    builder.init()
     return builder.build()
 }
