@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.justincodinguk.devdeck.features.decks.DeckScreen
 import devdeck.composeapp.generated.resources.Res
 import devdeck.composeapp.generated.resources.logo
 import org.jetbrains.compose.resources.painterResource
@@ -56,10 +57,10 @@ fun Dashboard(modifier: Modifier = Modifier) {
     }
 
     Box(modifier = modifier.fillMaxSize().padding(16.dp)) {
-        // TODO: Every screen ig
+        // TODO: 7/8 Features
         when(currentScreen) {
+            NavRailDestination.MyDeck -> DeckScreen()
             NavRailDestination.Feed -> Box(Modifier)
-            NavRailDestination.MyDeck -> Box(Modifier)
             NavRailDestination.MyProjects -> Box(Modifier)
             NavRailDestination.NewProject -> Box(Modifier)
             NavRailDestination.Settings -> Box(Modifier)

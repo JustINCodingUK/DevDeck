@@ -48,6 +48,7 @@ kotlin {
             implementation(projects.core.di)
             implementation(projects.core.datastore)
             implementation(projects.features.auth)
+            implementation(projects.features.decks)
 
             implementation(libs.firebase.common)
 
