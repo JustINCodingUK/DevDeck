@@ -53,6 +53,8 @@ internal class AccountCreationManagerImpl : AccountCreationManager {
             }
         }
 
+        if(!::user.isInitialized) throw IllegalStateException("User verification timed out")
+
         user.updateProfile(displayName = displayName)
 
         val newUser = DevDeckUser(
