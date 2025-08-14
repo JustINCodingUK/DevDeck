@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.flow
 internal class DeckRepositoryImpl(
     private val deckFileFirestoreService: FirestoreService<DeckFileModel>
 ) : DeckRepository {
-    
-    override fun loadDeckFileFromNetwork(id: String) = flow { 
+
+    override fun loadDeckFileFromNetwork(id: String) = flow {
         val deckFile = deckFileFirestoreService.getDocument(id)
         emit(deckFile)
     }
@@ -20,18 +20,26 @@ internal class DeckRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun runDeckFile(deckFileModel: DeckFileModel, batchSize: Int) = flow {
+    override fun runDeckFile(
+        deckFileModel: DeckFileModel,
+        refDir: String,
+        batchSize: Int
+    ) = flow {
         val compiler = inMemoryDeckFileCompiler {
             fileContents = deckFileModel.contents
-            referencesDirectory = "/home/justinw/IdeaProjects/DevDeck/references"
+            referencesDirectory = refDir
             taskBatchSize = batchSize
         }
         val deckFile = compiler.loadDeckFile()
         try {
             deckFile.execute()
-            emit(Result.success(Unit))
+            emit(Result.success(deckFile.taskHandler))
         } catch (exception: DeckFileSyntaxException) {
             emit(Result.failure(exception))
         }
+    }
+
+    override fun searchDeck(name: String): Flow<Result<List<DeckFileModel>>> {
+        TODO("Not yet implemented")
     }
 }

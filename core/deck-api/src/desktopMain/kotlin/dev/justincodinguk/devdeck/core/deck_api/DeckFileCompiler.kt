@@ -57,7 +57,7 @@ class DeckFileCompiler private constructor(
     }
 
     /** [TaskHandler] object to manage running tasks */
-    private val taskHandler = TaskHandler(taskBatchSize)
+    private val taskHandler = TaskHandler(hashCode().toLong(), taskBatchSize)
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true; prettyPrint = true }
 

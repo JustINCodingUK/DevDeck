@@ -55,7 +55,7 @@ class InstallTask private constructor(
          *
          * @return An [InstallTask] to install multiple packages via a single command
          */
-        fun multiplePackages(
+        private fun multiplePackages(
             platform: Platform,
             installReferences: List<InstallReference>,
             httpClient: HttpClient

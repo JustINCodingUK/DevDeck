@@ -11,7 +11,10 @@ import java.util.Collections
  *
  * @param batchSize The maximum number of tasks that can be executed in parallel
  */
-class TaskHandler(private val batchSize: Int) : CoroutineScope {
+class TaskHandler(
+    val id: Long,
+    private val batchSize: Int
+) : CoroutineScope {
 
     override val coroutineContext = Dispatchers.IO
 
@@ -20,7 +23,10 @@ class TaskHandler(private val batchSize: Int) : CoroutineScope {
 
     /** The list of running processes */
     private val runningProcesses = Collections.synchronizedList(mutableListOf<Process>())
-    private var threadId = 1
+    val processes = runningProcesses.toList()
+    private var threadId: Long = 1
+
+    private lateinit var onProcessInvoke: suspend (Process) -> Unit
 
     /**
      * Stops all running processes and clears the task queue.
@@ -41,6 +47,7 @@ class TaskHandler(private val batchSize: Int) : CoroutineScope {
             val job = launch { task.execute(); }
             val process = Process(threadId++, task, job)
             runningProcesses.add(process)
+            launch { onProcessInvoke(process) }
             job.invokeOnCompletion {
                 runningProcesses.remove(process)
                 job.cancel()
@@ -58,6 +65,11 @@ class TaskHandler(private val batchSize: Int) : CoroutineScope {
     fun isActive(): Boolean {
         return taskQueue.isNotEmpty() || runningProcesses.isNotEmpty()
     }
+
+    fun setOnInvokeListener(listener: suspend (Process) -> Unit) {
+        onProcessInvoke = listener
+    }
+
 
     /**
      * Refreshes the task queue if there are no running processes. Called when a task completes.
