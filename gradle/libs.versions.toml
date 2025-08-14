@@ -19,10 +19,9 @@ logback="1.4.14"
 slf4j="2.0.9"
 kotlinx-serialization="1.9.0"
 ktor="3.2.0"
-commons="1.10.0"
 mvn-publish="0.30.0"
-google-autoservice="1.1.1"
-
+h2="2.3.232"
+exposed="0.17.14"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -40,6 +39,7 @@ koin-compose-nav = { group = "io.insert-koin", name="koin-compose-viewmodel-navi
 koin-core = { group = "io.insert-koin", name="koin-core", version.ref="koin"}
 firebase-auth = { group = "dev.gitlive", name="firebase-auth", version.ref="firebase-kt"}
 firebase-common = { group = "dev.gitlive", name="firebase-common", version.ref="firebase-kt"}
+firebase-firestore = { group = "dev.gitlive", name="firebase-firestore", version.ref="firebase-kt"}
 mapdb = {group="org.mapdb", name="mapdb", version.ref="mapdb"}
 logback-classic = { group = "ch.qos.logback", name="logback-classic", version.ref="logback"}
 slf4j-api = { group = "org.slf4j", name="slf4j-api", version.ref="slf4j"}
@@ -49,8 +49,12 @@ ktor-client-content-negotiation = { group = "io.ktor", name="ktor-client-content
 ktor-client-json = { group = "io.ktor", name="ktor-serialization-kotlinx-json", version.ref="ktor"}
 credence-oauth-github = { group = "dev.justincodinguk.credence", name="oauth-github", version.ref="credence"}
 credence-core = {group="dev.justincodinguk.credence", name="foundation", version.ref="credence"}
-google-autoservice = { group = "com.google.auto.service", name="auto-service", version.ref="google-autoservice"}
 ksp-api = { group = "com.google.devtools.ksp", name="symbol-processing-api", version.ref="ksp"}
+jetbrains-exposed = { group = "org.jetbrains.exposed", name="exposed", version.ref="exposed"}
+jetbrains-exposed-core = { group = "org.jetbrains.exposed", name="exposed-core", version.ref="exposed"}
+jetbrains-exposed-dao = { group = "org.jetbrains.exposed", name="exposed-dao", version.ref="exposed"}
+jetbrains-exposed-jdbc = { group = "org.jetbrains.exposed", name="exposed-jdbc", version.ref="exposed"}
+h2-database = { group = "com.h2database", name="h2", version.ref="h2" }
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }

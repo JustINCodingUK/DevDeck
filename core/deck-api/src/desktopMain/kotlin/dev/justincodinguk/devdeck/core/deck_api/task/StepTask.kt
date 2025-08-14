@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  */
 class StepTask private constructor(
     taskName: String,
-    private val tasks: List<Task>
+    val tasks: List<Task>
 ) : Task {
 
     override val name = "Executing stepped task: $taskName"

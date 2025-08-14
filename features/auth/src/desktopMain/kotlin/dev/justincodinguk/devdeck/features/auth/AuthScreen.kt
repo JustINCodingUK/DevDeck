@@ -34,11 +34,12 @@ import dev.justincodinguk.devdeck.core.ui.auth.AuthForm
 import dev.justincodinguk.devdeck.core.ui.auth.Logo
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AuthScreen(
-    viewModel: AuthViewModel,
     darkTheme: Boolean,
+    viewModel: AuthViewModel = koinViewModel(),
     navigateToDashboard: () -> Unit,
 ) {
     val state by viewModel.authState.collectAsState()

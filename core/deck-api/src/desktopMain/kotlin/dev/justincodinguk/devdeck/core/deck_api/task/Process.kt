@@ -10,7 +10,7 @@ import kotlinx.coroutines.Job
  * @param job The [Job] associated with the process
  */
 data class Process(
-    val id: Int,
+    val id: Long,
     val task: Task,
     val job: Job
 ) {

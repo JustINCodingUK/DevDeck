@@ -29,8 +29,7 @@ fun App() {
                 startDestination = Routes.Auth.name
             ) {
                 composable(Routes.Auth.name) {
-                    val authViewModel = koinViewModel<AuthViewModel>()
-                    AuthScreen(authViewModel, isDarkTheme) { navController.navigate(Routes.Dashboard.name) }
+                    AuthScreen(isDarkTheme) { navController.navigate(Routes.Dashboard.name) }
                 }
 
                 composable(Routes.Dashboard.name) {
