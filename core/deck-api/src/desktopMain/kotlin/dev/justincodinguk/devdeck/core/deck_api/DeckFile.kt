@@ -1,5 +1,6 @@
 package dev.justincodinguk.devdeck.core.deck_api
 
+import dev.justincodinguk.devdeck.core.deck_api.task.StepTask
 import dev.justincodinguk.devdeck.core.deck_api.task.Task
 import dev.justincodinguk.devdeck.core.deck_api.task.TaskHandler
 
@@ -18,8 +19,34 @@ data class DeckFile(
     val taskHandler: TaskHandler,
 ) {
 
+    /**
+     * Summary of the tasks to be executed
+     */
+    private lateinit var agenda: List<List<String>>
+
+    /** Generates [agenda] and returns it
+     *  @return A summary of the tasks to be executed
+     */
+    fun getAgenda() = if (!::agenda.isInitialized) {
+        agenda = buildList {
+            tasks.forEach { task ->
+                if (task is StepTask) {
+                    add(buildList {
+                        task.tasks.forEach {
+                            add(it.name)
+                        }
+                    })
+                } else {
+                    add(listOf(task.name))
+                }
+            }
+        }
+        agenda
+    } else agenda
+
     /** Executes the tasks in the .deckfile, with the batch size specified in the [DeckFileCompiler] object */
     fun execute() {
         tasks.forEach { taskHandler.queueTask(it) }
     }
+
 }

@@ -4,5 +4,6 @@ data class DeckFileModel(
     val id: String,
     val author: DevDeckUser,
     val name: String,
+    val description: String = "",
     val contents: List<String>
 )
